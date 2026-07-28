@@ -1,70 +1,101 @@
-# Laboratorio 2 — Packet Tracer, Wireshark, `vi` y Samba
+# Laboratorio 2 - Packet Tracer, Wireshark, `vi` y Samba
 
 **Autores:** Juan Esteban Ortiz Pastrana y Santiago Alberto Naranjo Abril  
 **Institución:** Escuela Colombiana de Ingeniería Julio Garavito  
 **Grupo:** 2  
 **Fecha:** 26 de agosto de 2023
 
-## Descripción
+## Objetivo
 
-El laboratorio combina simulación de redes, captura de tráfico real, administración mediante herramientas Unix y configuración de recursos compartidos. Las prácticas se desarrollan con Cisco Packet Tracer, Wireshark, el editor `vi` y Samba.
+Relacionar la simulación de redes con el análisis de tráfico real y complementar la práctica con herramientas de administración Unix: editor `vi`, scripts y recursos compartidos mediante Samba.
+
+## Componentes del laboratorio
+
+| Componente | Actividad |
+| --- | --- |
+| Packet Tracer 8.2 | Construcción de topologías, conectividad y seguimiento de PDU |
+| Wireshark | Captura, filtrado e inspección de protocolos |
+| Editor `vi` | Inserción, búsqueda, sustitución, eliminación y guardado |
+| Máquinas virtuales | Duplicación de Slackware, Solaris y Windows Server |
+| Samba | Configuración de cliente, servidor, usuarios y carpetas compartidas |
+| Scripts | Automatización en PowerShell y shell de Unix |
 
 ## Cisco Packet Tracer
 
-Se reconoce la interfaz de Packet Tracer 8.2 y el significado de las conexiones continuas y discontinuas. En modo simulación se siguen paquetes entre dispositivos y se revisa cómo se construyen las PDU en cada capa.
+El informe diferencia las conexiones continuas para dispositivos de distinto tipo y las conexiones discontinuas para enlaces cruzados. La topología de Santiago integra routers, switches, equipos y servidores en varios segmentos.
 
-La práctica incluye:
+![Topología desarrollada en Packet Tracer](assets/topologia-packet-tracer.jpg)
 
-- Pruebas de conectividad mediante `ping`.
-- Seguimiento de paquetes desde servidores RADIUS y DHCP.
-- Inspección de direcciones, protocolos y encapsulamiento.
-- Comparación entre el comportamiento simulado y el tráfico de una red real.
+En modo simulación se realizaron pruebas con `ping` y se siguió el recorrido de los paquetes. La inspección de PDU permitió observar cómo cada capa agrega encabezados e información de control antes de transmitir los datos.
 
-## Captura con Wireshark
+## Análisis con Wireshark
 
-Wireshark se utiliza para capturar e inspeccionar paquetes recibidos por una interfaz de red en modo promiscuo. El informe documenta el filtrado por protocolos, especialmente HTTP, y la revisión de:
+La interfaz se utilizó en modo promiscuo para capturar tráfico y revisar:
 
-- Dirección de origen y destino.
-- Protocolo utilizado.
-- Longitud del paquete.
-- Encapsulamiento y segmentación.
-- Información asociada a cada capa.
+- Origen y destino.
+- Tipo de protocolo.
+- Longitud y encapsulamiento.
+- Segmentación.
+- Contenido asociado a las capas.
 
-El repositorio conserva la captura `http.pcapng` y los videos explicativos utilizados durante la práctica.
+Los filtros facilitaron aislar tráfico HTTP y seleccionar paquetes específicos para su análisis.
+
+![Captura y filtrado de tráfico en Wireshark](assets/captura-wireshark.jpg)
+
+El repositorio conserva `http.pcapng`, que permite volver a inspeccionar la captura.
 
 ## Editor `vi`
 
-Se realizan ejercicios de creación y modificación de archivos de texto:
+Se practicaron operaciones de edición sin depender de una interfaz gráfica:
 
-- Inserción antes o después del cursor.
-- Creación de líneas nuevas.
-- Búsqueda y sustitución de cadenas.
-- Eliminación de palabras y rangos de líneas.
-- Deshacer operaciones.
-- Desplazamiento hacia líneas específicas.
-- Guardado y salida con o sin conservar los cambios.
+```text
+i / a / o      insertar texto
+u              deshacer
+/palabra       buscar hacia adelante
+:set number    mostrar números de línea
+:w             guardar
+:q!            salir sin guardar
+:wq            guardar y salir
+```
 
-Entre los comandos documentados se encuentran `i`, `a`, `o`, `u`, `:w`, `:q`, `:q!`, `/palabra`, `:set number` y `:1,$s/buscar/reemplazar/g`.
+También se utilizaron sustituciones globales, eliminación de palabras y rangos de líneas, navegación directa y recuperación de cambios no guardados.
 
-## Máquinas y recursos compartidos
+## Samba
 
-Se duplicaron máquinas Slackware, Solaris y Windows Server, asignándoles direcciones IP dentro del rango de trabajo. Posteriormente se configuró Samba:
+### Preparación
 
-1. Montaje del medio de instalación.
-2. Instalación de Samba y herramientas de edición.
-3. Copia y modificación de `smb.conf`.
-4. Creación y autorización de usuarios.
-5. Definición de un directorio compartido.
-6. Inicio del servicio.
-7. Acceso desde Windows Server, Slackware y Solaris.
+1. Montaje de la ISO de Slackware.
+2. Instalación de Samba y Vim.
+3. Copia del archivo de ejemplo `smb.conf`.
+4. Instalación de dependencias requeridas.
+
+### Servidor
+
+Se creó el usuario `terry`, se definió un grupo de trabajo y se publicó el directorio `carpeta acceso`. El servicio se inició desde Slackware y se comprobó desde Windows Server mediante dirección IP y credenciales.
+
+![Acceso al servidor Samba](assets/servidor-samba.jpg)
+
+Las pruebas verificaron el acceso al directorio, la lectura del archivo de prueba y la conexión desde Slackware. En Solaris fue necesario instalar Samba manualmente antes de usar `smbclient`.
 
 ## Automatización
 
-Los scripts incluidos trabajan con visualización de información, usuarios, grupos, logs y tareas de administración en PowerShell y shell de Unix.
+Los scripts incluidos permiten trabajar con usuarios, grupos, logs y visualización de información tanto en PowerShell como en shell:
 
-## Contenido del repositorio
+- `Logs.ps1`
+- `Visualizacion.ps1`
+- `Visualizacion.sh`
+- `grupos.sh`
+- `lab02.sh`
+- `listar.ps1`
+- `usuarios.sh`
 
-- Informe en DOCX y PDF.
-- Captura de tráfico HTTP.
-- Scripts de PowerShell y shell.
-- Videos explicativos de cursos y Wireshark.
+## Resultados
+
+Se comprobó que la simulación permite estudiar el flujo de paquetes antes de trabajar sobre una red real. Wireshark hizo visible la estructura del tráfico, mientras que `vi`, los scripts y Samba permitieron practicar administración y transferencia de archivos entre sistemas heterogéneos.
+
+## Informe y evidencias
+
+- [Informe completo en PDF](laboratorio-02-packet-tracer-wireshark-y-samba.pdf)
+- `Laboratorio No 2.docx`
+- `http.pcapng`
+- Videos explicativos y scripts
